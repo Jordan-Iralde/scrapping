@@ -1,0 +1,8 @@
+base_url: "https://listado.mercadolibre.com.ar/"
+search_query: "iphone"
+max_pages: 2
+delay_seconds: [1.5, 3.5]
+
+google_sheets:
+  spreadsheet_name: "MercadoLibre Scraping"
+  worksheet_name: "Resultados"
