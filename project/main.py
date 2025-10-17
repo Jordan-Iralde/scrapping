@@ -1,45 +1,22 @@
-import yaml
-import pandas as pd
-from core.scraper import MercadoLibreScraper
-from core.sheets_uploader import GoogleSheetsUploader
-from core.logger import setup_logger
+from core.scrapper import scrape_data
+from core.parser import parse_html
+from core.storage import save_to_csv
+from core.logger import get_logger
+
+logger = get_logger(__name__)
 
 def main():
-    logger = setup_logger()
-    logger.info("=== Iniciando scraper de Mercado Libre ===")
+    logger.info("Iniciando el proceso de scraping...")
 
-    # Leer configuración
-    with open("config.yaml", "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
+    html_pages = scrape_data()
+    logger.info(f"Se descargaron {len(html_pages)} páginas HTML")
 
-    scraper = MercadoLibreScraper(
-        base_url=config["base_url"],
-        query=config["search_query"],
-        max_pages=config["max_pages"],
-        delay=tuple(config["delay_seconds"]),
-        logger=logger
-    )
+    df = parse_html(html_pages)
+    logger.info(f"Se extrajeron {len(df)} filas de datos")
 
-    items = scraper.scrape()
-    if not items:
-        logger.warning("No se encontraron resultados.")
-        return
+    save_to_csv(df, "data/processed/datos.csv")
+    logger.info("Datos guardados en data/processed/datos.csv")
 
-    df = pd.DataFrame(items)
-    df.to_csv("data/output.csv", index=False)
-    logger.info(f"Datos guardados localmente: data/output.csv ({len(df)} filas)")
-
-    try:
-        gs = GoogleSheetsUploader(
-            spreadsheet_name=config["google_sheets"]["spreadsheet_name"],
-            worksheet_name=config["google_sheets"]["worksheet_name"]
-        )
-        gs.upload_dataframe(df)
-        logger.info("Datos subidos correctamente a Google Sheets.")
-    except Exception as e:
-        logger.error(f"Error al subir a Google Sheets: {e}")
-
-    logger.info("✅ Scraping completado exitosamente")
 
 if __name__ == "__main__":
     main()

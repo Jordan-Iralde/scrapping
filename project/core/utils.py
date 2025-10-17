@@ -1,27 +1,20 @@
 import time
-import random
-import functools
+from functools import wraps
+from core.logger import get_logger
 
-def retry(max_retries=3, delay=2, backoff=2):
-    """Decorador de reintento exponencial."""
+logger = get_logger(__name__)
+
+def retry(retries=3, delay=1):
+    """Decorador para reintentar funciones que pueden fallar (como requests)."""
     def decorator(func):
-        @functools.wraps(func)
+        @wraps(func)
         def wrapper(*args, **kwargs):
-            retries = 0
-            current_delay = delay
-            while retries < max_retries:
+            for i in range(retries):
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
-                    retries += 1
-                    if retries == max_retries:
-                        raise
-                    print(f"[Retry] Error: {e}, reintentando en {current_delay}s...")
-                    time.sleep(current_delay)
-                    current_delay *= backoff
+                    logger.warning(f"Intento {i+1}/{retries} falló: {e}")
+                    time.sleep(delay)
+            raise Exception(f"{func.__name__} falló después de {retries} intentos.")
         return wrapper
     return decorator
-
-def random_delay(min_sec, max_sec):
-    """Espera aleatoriamente entre min_sec y max_sec segundos."""
-    time.sleep(random.uniform(min_sec, max_sec))

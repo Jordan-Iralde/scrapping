@@ -1,21 +1,26 @@
 from bs4 import BeautifulSoup
+import pandas as pd
+from core.logger import get_logger
 
-def parse_items(html):
-    """Extrae títulos, precios y URLs de productos desde una página HTML."""
-    soup = BeautifulSoup(html, "html.parser")
-    items = []
+logger = get_logger(__name__)
 
-    for card in soup.select("li.ui-search-layout__item"):
-        try:
-            title = card.select_one("h2.ui-search-item__title").get_text(strip=True)
-            link = card.select_one("a.ui-search-link")["href"]
-            price = card.select_one(".price-tag-fraction").get_text(strip=True)
-            items.append({
-                "title": title,
-                "url": link,
-                "price": price
+def parse_html(html_pages: list[str]) -> pd.DataFrame:
+    """Procesa las páginas HTML y devuelve un DataFrame con los datos extraídos."""
+    data = []
+
+    for html in html_pages:
+        soup = BeautifulSoup(html, "html.parser")
+        items = soup.select("div.item")  # ejemplo: cambia según tu web
+
+        for item in items:
+            name = item.select_one(".title").get_text(strip=True) if item.select_one(".title") else "N/A"
+            price = item.select_one(".price").get_text(strip=True) if item.select_one(".price") else "N/A"
+
+            data.append({
+                "name": name,
+                "price": price,
             })
-        except AttributeError:
-            continue
 
-    return items
+    df = pd.DataFrame(data)
+    logger.info(f"Datos parseados correctamente: {len(df)} filas")
+    return df

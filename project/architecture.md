@@ -1,17 +1,21 @@
 ```
 project/
-├── README.md
-├── requirements.txt
+├── main.py
 ├── config.yaml
 ├── .env
-│
-├── main.py
+├── requirements.txt
 │
 ├── core/
 │   ├── __init__.py
-│   ├── scraper.py          # Lógica principal de scraping
-│   ├── parser.py           # Limpieza y extracción del HTML
-│   ├── sheets_uploader.py  # Conexión y subida a Google Sheets
-│   ├── utils.py            # Funciones auxiliares (reintentos, logs, etc.)
-│   └── logger.py           # Configuración de logging
+│   ├── scraper.py
+│   ├── parser.py
+│   ├── storage.py
+│   ├── utils.py
+│   ├── logger.py
+│   └── scheduler.py
+│
+└── data/
+    ├── raw/
+    └── processed/
+
 ```

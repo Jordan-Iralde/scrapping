@@ -1,16 +1,21 @@
 import logging
-from pathlib import Path
+import os
 
-def setup_logger(name='scraper', log_dir='data/logs'):
-    Path(log_dir).mkdir(parents=True, exist_ok=True)
-    log_file = Path(log_dir) / f"{name}.log"
+def get_logger(name: str):
+    os.makedirs("data/logs", exist_ok=True)
 
     logging.basicConfig(
+        filename="data/logs/scraper.log",
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler(log_file, encoding='utf-8'),
-            logging.StreamHandler()
-        ]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-    return logging.getLogger(name)
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter("%(levelname)s - %(message)s"))
+
+    logger = logging.getLogger(name)
+    if not logger.handlers:
+        logger.addHandler(console)
+
+    return logger
