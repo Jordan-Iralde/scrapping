@@ -1,0 +1,19 @@
+2025-10-17 14:27:33,145 - __main__ - INFO - Iniciando el proceso de scraping...
+2025-10-17 14:27:33,148 - core.scrapper - INFO - Descargando (estático): https://books.toscrape.com/catalogue/page-1.html
+2025-10-17 14:27:35,084 - core.scrapper - INFO - Descargando (estático): https://books.toscrape.com/catalogue/page-2.html
+2025-10-17 14:27:36,890 - core.scrapper - INFO - Descargando (estático): https://books.toscrape.com/catalogue/page-3.html
+2025-10-17 14:27:39,272 - core.scrapper - INFO - Descargando (dinámico): https://listado.mercadolibre.com.ar/
+2025-10-17 14:27:40,386 - core.scrapper - ERROR - Error al descargar https://listado.mercadolibre.com.ar/: BrowserType.launch: Executable doesn't exist at C:\Users\Proa\AppData\Local\ms-playwright\firefox-1490\firefox\firefox.exe
+\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
+\u2551 Looks like Playwright was just installed or updated.       \u2551
+\u2551 Please run the following command to download new browsers: \u2551
+\u2551                                                            \u2551
+\u2551     playwright install                                     \u2551
+\u2551                                                            \u2551
+\u2551 <3 Playwright Team                                         \u2551
+\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d
+2025-10-17 14:27:40,389 - __main__ - INFO - Se descargaron 3 páginas HTML
+2025-10-17 14:27:40,621 - core.parser - INFO - Datos parseados correctamente para books: 60 filas
+2025-10-17 14:27:40,624 - __main__ - INFO - Se parsearon 60 filas en total
+2025-10-17 14:27:40,666 - core.storage - INFO - Archivo guardado: data/processed\books.csv
+2025-10-17 14:27:40,691 - __main__ - INFO - Datos guardados en archivos separados por sitio

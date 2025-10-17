@@ -4,23 +4,55 @@ from core.logger import get_logger
 
 logger = get_logger(__name__)
 
-def parse_html(html_pages: list[str]) -> pd.DataFrame:
-    """Procesa las páginas HTML y devuelve un DataFrame con los datos extraídos."""
+def parse_books(html: str) -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
+    books = soup.select("article.product_pod")
     data = []
+    for book in books:
+        title = book.h3.a["title"]
+        price = book.select_one("p.price_color").get_text(strip=True)
+        stock = book.select_one("p.instock.availability").get_text(strip=True)
+        data.append({"title": title, "price": price, "stock": stock})
+    return data
 
-    for html in html_pages:
-        soup = BeautifulSoup(html, "html.parser")
-        items = soup.select("div.item")  # ejemplo: cambia según tu web
+def parse_mercadolibre(html: str) -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
+    items = soup.select("li.ui-search-layout__item")
+    data = []
+    for item in items:
+        title_tag = item.select_one("h2.ui-search-item__title")
+        price_tag = item.select_one("span.price-tag-fraction")
+        if not title_tag or not price_tag:
+            continue
+        data.append({
+            "title": title_tag.get_text(strip=True),
+            "price": price_tag.get_text(strip=True),
+        })
+    return data
 
-        for item in items:
-            name = item.select_one(".title").get_text(strip=True) if item.select_one(".title") else "N/A"
-            price = item.select_one(".price").get_text(strip=True) if item.select_one(".price") else "N/A"
+def parse_html(results: list[dict]) -> dict:
+    """Recibe los HTMLs y devuelve un diccionario {site: DataFrame}"""
+    site_data = {}
 
-            data.append({
-                "name": name,
-                "price": price,
-            })
+    for result in results:
+        site = result["site"]
+        html = result["html"]
 
-    df = pd.DataFrame(data)
-    logger.info(f"Datos parseados correctamente: {len(df)} filas")
-    return df
+        if site == "books":
+            df = pd.DataFrame(parse_books(html))
+        elif site == "mercadolibre":
+            df = pd.DataFrame(parse_mercadolibre(html))
+        else:
+            logger.warning(f"No hay parser definido para el sitio '{site}'")
+            continue
+
+        if site not in site_data:
+            site_data[site] = df
+        else:
+            site_data[site] = pd.concat([site_data[site], df], ignore_index=True)
+
+    for site, df in site_data.items():
+        logger.info(f"Datos parseados correctamente para {site}: {len(df)} filas")
+
+    return site_data
+

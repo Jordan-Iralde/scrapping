@@ -1,8 +1,15 @@
-base_url: "https://listado.mercadolibre.com.ar/"
-search_query: "iphone"
-max_pages: 2
-delay_seconds: [1.5, 3.5]
-
-google_sheets:
-  spreadsheet_name: "MercadoLibre Scraping"
-  worksheet_name: "Resultados"
+scraper:
+  default_headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    Accept-Language: "es-ES,es;q=0.9,en;q=0.8"
+  delay: 1
+  retries: 3
+  sites:
+    - name: books
+      url: "https://books.toscrape.com/catalogue/page-{}.html"
+      pages: 3
+      use_js: false
+    - name: mercadolibre
+      url: "https://listado.mercadolibre.com.ar/"
+      use_js: true
+      wait_time: 5
